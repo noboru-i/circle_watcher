@@ -43,7 +43,7 @@ class BuildRecyclerViewAdapter extends RecyclerView.Adapter<BuildRecyclerViewAda
 
         holder.binding.view.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onListFragmentInteraction(holder.mItem);
+                listener.onSelectBuild(holder.mItem);
             }
         });
     }

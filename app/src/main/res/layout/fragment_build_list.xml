@@ -4,11 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="hm.orz.chaos114.android.circlewatcher.modules.main.BuildFragment"
-        tools:listitem="@layout/fragment_build"/>
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="hm.orz.chaos114.android.circlewatcher.modules.main.BuildFragment"
+            tools:listitem="@layout/fragment_build"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </layout>

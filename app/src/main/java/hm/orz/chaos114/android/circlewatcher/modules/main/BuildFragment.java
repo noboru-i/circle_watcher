@@ -1,11 +1,11 @@
 package hm.orz.chaos114.android.circlewatcher.modules.main;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +30,8 @@ public class BuildFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
-    private OnListFragmentInteractionListener mListener;
+    private OnListFragmentInteractionListener listener;
+    private FragmentBuildListBinding binding;
     private BuildRecyclerViewAdapter adapter;
 
     public static BuildFragment newInstance(int columnCount) {
@@ -52,21 +53,21 @@ public class BuildFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO DataBinding
-        View view = inflater.inflate(R.layout.fragment_build_list, container, false);
-
-        RecyclerView recyclerView = (RecyclerView) view;
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        adapter = new BuildRecyclerViewAdapter(mListener);
-        recyclerView.setAdapter(adapter);
-
-        return view;
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_build_list, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.list.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        adapter = new BuildRecyclerViewAdapter(listener);
+        binding.list.setAdapter(adapter);
+
+        binding.swipeRefresh.setOnRefreshListener(this::fetchBuilds);
+
+        showRefreshing(true);
         fetchBuilds();
     }
 
@@ -74,7 +75,7 @@ public class BuildFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+            listener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -84,7 +85,7 @@ public class BuildFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     private void fetchBuilds() {
@@ -92,15 +93,26 @@ public class BuildFragment extends Fragment {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
+                    showRefreshing(false);
                     adapter.resetItems(list);
                 }, throwable -> {
+                    showRefreshing(false);
                     Timber.d(throwable, "error");
                     Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
+    private void showRefreshing(boolean show) {
+        if (show) {
+            binding.swipeRefresh.setRefreshing(true);
+        } else {
+            if (binding.swipeRefresh.isRefreshing()) {
+                binding.swipeRefresh.setRefreshing(false);
+            }
+        }
+    }
+
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(Build item);
+        void onSelectBuild(Build item);
     }
 }

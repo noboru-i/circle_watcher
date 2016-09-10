@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(Build item) {
+    public void onSelectBuild(Build item) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getBuildUrl()));
         startActivity(intent);
     }
