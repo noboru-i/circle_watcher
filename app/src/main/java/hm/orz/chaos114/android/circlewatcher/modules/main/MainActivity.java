@@ -3,6 +3,7 @@ package hm.orz.chaos114.android.circlewatcher.modules.main;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,11 +16,13 @@ import android.view.MenuItem;
 
 import hm.orz.chaos114.android.circlewatcher.R;
 import hm.orz.chaos114.android.circlewatcher.databinding.ActivityMainBinding;
+import hm.orz.chaos114.android.circlewatcher.entity.Build;
 import hm.orz.chaos114.android.circlewatcher.modules.auth.AuthActivity;
 import hm.orz.chaos114.android.circlewatcher.util.SharedPreferenceUtil;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        BuildFragment.OnListFragmentInteractionListener {
 
     private ActivityMainBinding binding;
 
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        BuildFragment fragment = BuildFragment.newInstance(1);
+        getSupportFragmentManager().beginTransaction().add(R.id.content_main, fragment).commit();
     }
 
     @Override
@@ -98,5 +104,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onListFragmentInteraction(Build item) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getBuildUrl()));
+        startActivity(intent);
     }
 }

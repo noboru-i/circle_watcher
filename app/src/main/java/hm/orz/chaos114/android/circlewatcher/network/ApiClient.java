@@ -2,6 +2,7 @@ package hm.orz.chaos114.android.circlewatcher.network;
 
 import android.content.Context;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -46,7 +47,7 @@ public final class ApiClient {
                 .build();
 
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(CIRCLE_CI_URL)
