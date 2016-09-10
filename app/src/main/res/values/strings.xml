@@ -4,4 +4,9 @@
     <string name="prompt_api_token">API token</string>
     <string name="action_sign_in">Validate API token</string>
     <string name="error_field_required">This field is required</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

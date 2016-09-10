@@ -2,6 +2,8 @@ package hm.orz.chaos114.android.circlewatcher.modules.auth;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import hm.orz.chaos114.android.circlewatcher.R;
 import hm.orz.chaos114.android.circlewatcher.databinding.ActivityAuthBinding;
+import hm.orz.chaos114.android.circlewatcher.modules.main.MainActivity;
 import hm.orz.chaos114.android.circlewatcher.network.ApiClient;
 import hm.orz.chaos114.android.circlewatcher.util.SharedPreferenceUtil;
 import retrofit2.adapter.rxjava.HttpException;
@@ -23,6 +26,10 @@ import rx.schedulers.Schedulers;
 public class AuthActivity extends AppCompatActivity {
 
     private ActivityAuthBinding binding;
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context, AuthActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +70,9 @@ public class AuthActivity extends AppCompatActivity {
                         showProgress(false);
 
                         Toast.makeText(this, "hello \"" + user.getName() + "\"", Toast.LENGTH_SHORT).show();
+
+                        startActivity(MainActivity.getIntent(this));
+                        finish();
                     }, throwable -> {
                         showProgress(false);
 
