@@ -1,14 +1,24 @@
-package hm.orz.chaos114.android.circlewatcher;
+package hm.orz.chaos114.android.circlewatcher.modules.auth;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
+import hm.orz.chaos114.android.circlewatcher.R;
 import hm.orz.chaos114.android.circlewatcher.databinding.ActivityAuthBinding;
+import hm.orz.chaos114.android.circlewatcher.modules.main.MainActivity;
+import hm.orz.chaos114.android.circlewatcher.network.ApiClient;
+import hm.orz.chaos114.android.circlewatcher.util.SharedPreferenceUtil;
+import retrofit2.adapter.rxjava.HttpException;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * A login screen that offers login via access token.
@@ -16,40 +26,65 @@ import hm.orz.chaos114.android.circlewatcher.databinding.ActivityAuthBinding;
 public class AuthActivity extends AppCompatActivity {
 
     private ActivityAuthBinding binding;
+
+    public static Intent getIntent(Context context) {
+        return new Intent(context, AuthActivity.class);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_auth);
+        binding.setHandlers(this);
     }
 
     /**
      * Call by DataBinding.
      */
     public void attemptLogin() {
-
         // Reset errors.
         binding.apiToken.setError(null);
 
         // Store values at the time of the login attempt.
         String apiToken = binding.apiToken.getText().toString();
 
-        boolean cancel = false;
+        boolean hasError = false;
         View focusView = null;
 
         if (TextUtils.isEmpty(apiToken)) {
             binding.apiToken.setError(getString(R.string.error_field_required));
             focusView = binding.apiToken;
-            cancel = true;
+            hasError = true;
         }
 
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+        if (hasError) {
             focusView.requestFocus();
         } else {
             showProgress(true);
 
-            // TODO execute API
+            SharedPreferenceUtil.saveApiToken(this, apiToken);
+            ApiClient.getClient(this).getUser()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(user -> {
+                        showProgress(false);
+
+                        Toast.makeText(this, "hello \"" + user.getName() + "\"", Toast.LENGTH_SHORT).show();
+
+                        startActivity(MainActivity.getIntent(this));
+                        finish();
+                    }, throwable -> {
+                        showProgress(false);
+
+                        if (throwable instanceof HttpException) {
+                            HttpException exception = (HttpException) throwable;
+                            if (exception.code() == 401) {
+                                Toast.makeText(this, "invalid API Token", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        Toast.makeText(this, "Sorry, some error occured.", Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 

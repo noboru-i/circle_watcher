@@ -1,4 +1,4 @@
-package hm.orz.chaos114.android.circlewatcher;
+package hm.orz.chaos114.android.circlewatcher.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,7 +15,7 @@ public final class SharedPreferenceUtil {
 
     public static void saveApiToken(Context context, String apiToken) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_API_TOKEN, apiToken).apply();
+        sp.edit().putString(KEY_API_TOKEN, apiToken).commit();
     }
 
     public static String getApiToken(Context context) {
