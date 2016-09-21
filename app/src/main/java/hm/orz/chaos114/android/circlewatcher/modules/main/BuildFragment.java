@@ -11,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
+import hm.orz.chaos114.android.circlewatcher.App;
 import hm.orz.chaos114.android.circlewatcher.R;
 import hm.orz.chaos114.android.circlewatcher.databinding.FragmentBuildListBinding;
 import hm.orz.chaos114.android.circlewatcher.entity.Build;
-import hm.orz.chaos114.android.circlewatcher.network.ApiClient;
+import hm.orz.chaos114.android.circlewatcher.network.CircleCiService;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -23,6 +26,9 @@ import timber.log.Timber;
  * Show builds list.
  */
 public class BuildFragment extends Fragment {
+
+    @Inject
+    CircleCiService circleCiService;
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -49,6 +55,8 @@ public class BuildFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+        ((App) getActivity().getApplicationContext()).getApplicationComponent().activityComponent().inject(this);
     }
 
     @Override
@@ -89,7 +97,7 @@ public class BuildFragment extends Fragment {
     }
 
     private void fetchBuilds() {
-        ApiClient.getClient(getContext()).getRecentBuilds()
+        circleCiService.getRecentBuilds()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {

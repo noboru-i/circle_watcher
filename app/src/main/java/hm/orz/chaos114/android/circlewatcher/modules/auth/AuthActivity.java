@@ -11,10 +11,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
+import hm.orz.chaos114.android.circlewatcher.App;
 import hm.orz.chaos114.android.circlewatcher.R;
 import hm.orz.chaos114.android.circlewatcher.databinding.ActivityAuthBinding;
 import hm.orz.chaos114.android.circlewatcher.modules.main.MainActivity;
 import hm.orz.chaos114.android.circlewatcher.network.ApiClient;
+import hm.orz.chaos114.android.circlewatcher.network.CircleCiService;
 import hm.orz.chaos114.android.circlewatcher.util.SharedPreferenceUtil;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
@@ -24,6 +28,9 @@ import rx.schedulers.Schedulers;
  * A login screen that offers login via access token.
  */
 public class AuthActivity extends AppCompatActivity {
+
+    @Inject
+    CircleCiService circleCiService;
 
     private ActivityAuthBinding binding;
 
@@ -36,6 +43,8 @@ public class AuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_auth);
         binding.setHandlers(this);
+
+        ((App)getApplicationContext()).getApplicationComponent().activityComponent().inject(this);
     }
 
     /**
@@ -63,7 +72,7 @@ public class AuthActivity extends AppCompatActivity {
             showProgress(true);
 
             SharedPreferenceUtil.saveApiToken(this, apiToken);
-            ApiClient.getClient(this).getUser()
+            circleCiService.getUser()
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(user -> {
