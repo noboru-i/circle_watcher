@@ -1,25 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:id="@+id/view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <data>
 
-        <TextView
-            android:id="@+id/id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem"/>
+        <variable
+            name="build"
+            type="hm.orz.chaos114.android.circlewatcher.modules.main.BuildViewModel"/>
+    </data>
 
-        <TextView
-            android:id="@+id/content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem"/>
-    </LinearLayout>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:cardCornerRadius="1dp"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <View
+                android:id="@+id/status_indicator"
+                android:layout_width="8dp"
+                android:layout_height="match_parent"
+                android:background="@{build.statusColor}"
+                tools:background="@android:color/black"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/status_indicator"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <TextView
+                        android:id="@+id/repository_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:text="@{build.displayName}"
+                        android:textAppearance="?attr/textAppearanceListItem"
+                        tools:text="owner / repository / branch"/>
+
+                    <TextView
+                        android:id="@+id/commit_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:maxLines="1"
+                        android:scrollHorizontally="true"
+                        android:text="@{build.commitMessage}"
+                        android:textAppearance="?attr/textAppearanceListItemSmall"
+                        tools:text="commit message"/>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </layout>

@@ -38,8 +38,7 @@ class BuildRecyclerViewAdapter extends RecyclerView.Adapter<BuildRecyclerViewAda
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Build item = values.get(position);
         holder.mItem = item;
-        holder.binding.id.setText(String.format(Locale.US, "%d", item.getBuildNum()));
-        holder.binding.content.setText(item.getUsername() + "/" + item.getReponame());
+        holder.binding.setBuild(new BuildViewModel(holder.binding.view.getContext(), item));
 
         holder.binding.view.setOnClickListener(v -> {
             if (listener != null) {

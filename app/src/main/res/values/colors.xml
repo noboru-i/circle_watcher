@@ -3,4 +3,13 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!--// :retried, :canceled, :infrastructure_fail, :timedout, :not_run, :running, :failed, :queued, :scheduled, :not_running, :no_tests, :fixed, :success-->
+    <drawable name="statusRetried">#898989</drawable>
+    <drawable name="statusNotRun">#898989</drawable>
+    <drawable name="statusRunning">#66d3e4</drawable>
+    <drawable name="statusFailed">#ed5c5c</drawable>
+    <drawable name="statusScheduled">#ab7fd1</drawable>
+    <drawable name="statusNotRunning">#ab7fd1</drawable>
+    <drawable name="statusSuccess">#27a0b6</drawable>
 </resources>

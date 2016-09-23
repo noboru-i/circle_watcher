@@ -69,6 +69,7 @@ public class BuildFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.list.setHasFixedSize(true);
         binding.list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         adapter = new BuildRecyclerViewAdapter(listener);
         binding.list.setAdapter(adapter);
