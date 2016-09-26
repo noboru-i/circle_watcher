@@ -32,25 +32,23 @@ public class BuildViewModel {
         // :retried, :canceled, :infrastructure_fail, :timedout, :not_run, :running, :failed, :queued, :scheduled, :not_running, :no_tests, :fixed, :success
         switch (build.getStatus()) {
             case "retried":
-                drawable = R.drawable.statusRetried;
-                break;
+            case "canceled":
             case "not_run":
-                drawable = R.drawable.statusNotRun;
+                drawable = R.drawable.statusStop;
                 break;
             case "running":
-                drawable = R.drawable.statusRunning;
+                drawable = R.drawable.statusBusy;
                 break;
             case "failed":
-                drawable = R.drawable.statusFailed;
+                drawable = R.drawable.statusFail;
                 break;
             case "scheduled":
-                drawable = R.drawable.statusScheduled;
-                break;
             case "not_running":
-                drawable = R.drawable.statusNotRunning;
+                drawable = R.drawable.statusQueued;
                 break;
+            case "fixed":
             case "success":
-                drawable = R.drawable.statusSuccess;
+                drawable = R.drawable.statusPass;
                 break;
             default:
                 return null;
