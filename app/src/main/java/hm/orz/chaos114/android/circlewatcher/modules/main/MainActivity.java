@@ -19,6 +19,7 @@ import hm.orz.chaos114.android.circlewatcher.databinding.ActivityMainBinding;
 import hm.orz.chaos114.android.circlewatcher.entity.Build;
 import hm.orz.chaos114.android.circlewatcher.modules.auth.AuthActivity;
 import hm.orz.chaos114.android.circlewatcher.util.SharedPreferenceUtil;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSelectBuild(Build item) {
+        Timber.d("item = %s", item);
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getBuildUrl()));
         startActivity(intent);
     }

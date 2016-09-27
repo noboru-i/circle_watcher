@@ -12,6 +12,7 @@ import hm.orz.chaos114.android.circlewatcher.R;
 import hm.orz.chaos114.android.circlewatcher.databinding.FragmentBuildBinding;
 import hm.orz.chaos114.android.circlewatcher.entity.Build;
 import hm.orz.chaos114.android.circlewatcher.entity.BuildList;
+import timber.log.Timber;
 
 /**
  * Adapter for BuildFragment.
@@ -38,10 +39,10 @@ class BuildRecyclerViewAdapter extends RecyclerView.Adapter<BuildRecyclerViewAda
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Build item = values.get(position);
         holder.mItem = item;
-        holder.binding.id.setText(String.format(Locale.US, "%d", item.getBuildNum()));
-        holder.binding.content.setText(item.getUsername() + "/" + item.getReponame());
+        holder.binding.setBuild(new BuildViewModel(holder.itemView.getContext(), item));
 
-        holder.binding.view.setOnClickListener(v -> {
+        holder.binding.cardView.setOnClickListener(v -> {
+            Timber.d("test click %s", v);
             if (listener != null) {
                 listener.onSelectBuild(holder.mItem);
             }
