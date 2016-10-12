@@ -17,7 +17,10 @@ import hm.orz.chaos114.android.circlewatcher.App;
 import hm.orz.chaos114.android.circlewatcher.R;
 import hm.orz.chaos114.android.circlewatcher.databinding.FragmentBuildListBinding;
 import hm.orz.chaos114.android.circlewatcher.entity.Build;
+import hm.orz.chaos114.android.circlewatcher.entity.BuildList;
 import hm.orz.chaos114.android.circlewatcher.network.CircleCiService;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -29,34 +32,28 @@ public class BuildFragment extends Fragment {
 
     @Inject
     CircleCiService circleCiService;
-
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    @Inject
+    Realm realm;
 
     private OnListFragmentInteractionListener listener;
     private FragmentBuildListBinding binding;
     private BuildRecyclerViewAdapter adapter;
 
-    public static BuildFragment newInstance(int columnCount) {
-        BuildFragment fragment = new BuildFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
+    public static BuildFragment newInstance() {
+        return new BuildFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
-
         ((App) getActivity().getApplicationContext()).getApplicationComponent().activityComponent().inject(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchBuildsWithCache();
     }
 
     @Override
@@ -77,7 +74,7 @@ public class BuildFragment extends Fragment {
         binding.swipeRefresh.setOnRefreshListener(this::fetchBuilds);
 
         showRefreshing(true);
-        fetchBuilds();
+        fetchBuildsWithCache();
     }
 
     @Override
@@ -97,18 +94,39 @@ public class BuildFragment extends Fragment {
         listener = null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
     private void fetchBuilds() {
         circleCiService.getRecentBuilds()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
-                    showRefreshing(false);
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(list);
+                    realm.commitTransaction();
                     adapter.resetItems(list);
                 }, throwable -> {
-                    showRefreshing(false);
                     Timber.d(throwable, "error");
                     Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                }, () -> {
+                    showRefreshing(false);
                 });
+    }
+
+    private void fetchBuildsWithCache() {
+        RealmResults<Build> builds = realm.where(Build.class)
+                .findAll();
+        if (builds.size() != 0) {
+            Timber.d("Build has cache");
+            showRefreshing(false);
+            adapter.resetItems(new BuildList(realm.copyFromRealm(builds)));
+            return;
+        }
+        fetchBuilds();
     }
 
     private void showRefreshing(boolean show) {

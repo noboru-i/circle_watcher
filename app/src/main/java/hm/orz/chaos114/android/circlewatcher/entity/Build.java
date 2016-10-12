@@ -2,14 +2,19 @@ package hm.orz.chaos114.android.circlewatcher.entity;
 
 import java.util.Date;
 
-import lombok.Value;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * CircleCI's build class.
  */
-@Value
-public class Build {
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class Build extends RealmObject {
     private String vcsUrl;
+    @PrimaryKey
     private String buildUrl;
     private int buildNum;
     private String branch;

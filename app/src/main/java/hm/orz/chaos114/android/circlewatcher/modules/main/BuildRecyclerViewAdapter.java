@@ -37,14 +37,13 @@ class BuildRecyclerViewAdapter extends RecyclerView.Adapter<BuildRecyclerViewAda
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Build item = values.get(position);
-        holder.mItem = item;
+        final Build item = values.get(position);
         holder.binding.setBuild(new BuildViewModel(holder.itemView.getContext(), item));
 
         holder.binding.cardView.setOnClickListener(v -> {
             Timber.d("test click %s", v);
             if (listener != null) {
-                listener.onSelectBuild(holder.mItem);
+                listener.onSelectBuild(item);
             }
         });
     }
@@ -65,8 +64,6 @@ class BuildRecyclerViewAdapter extends RecyclerView.Adapter<BuildRecyclerViewAda
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final FragmentBuildBinding binding;
-
-        private Build mItem;
 
         ViewHolder(View view) {
             super(view);

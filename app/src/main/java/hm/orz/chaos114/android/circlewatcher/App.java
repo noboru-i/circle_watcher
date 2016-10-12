@@ -5,6 +5,8 @@ import android.app.Application;
 import hm.orz.chaos114.android.circlewatcher.di.AppComponent;
 import hm.orz.chaos114.android.circlewatcher.di.AppModule;
 import hm.orz.chaos114.android.circlewatcher.di.DaggerAppComponent;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import lombok.Getter;
 import timber.log.Timber;
 
@@ -28,11 +30,20 @@ public class App extends Application {
         }
 
         initializeInjector();
+        initializeRealm();
     }
 
     private void initializeInjector() {
         applicationComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
+    }
+
+    private void initializeRealm() {
+        Realm.init(this);
+
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
+        Realm.deleteRealm(realmConfig);
+        Realm.setDefaultConfiguration(realmConfig);
     }
 }

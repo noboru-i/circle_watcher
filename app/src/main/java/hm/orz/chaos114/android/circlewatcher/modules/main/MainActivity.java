@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        BuildFragment fragment = BuildFragment.newInstance(1);
+        BuildFragment fragment = BuildFragment.newInstance();
         getSupportFragmentManager().beginTransaction().add(R.id.content_main, fragment).commit();
     }
 
